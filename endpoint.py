@@ -49,8 +49,7 @@ class AngularHandler(tornado.web.RequestHandler):
         self.render("ui.html")
 
 
-conn_string = "host='ec2-54-197-238-242.compute-1.amazonaws.com' port='5432' dbname='debii9mj21ur8o' " \
-                      "user='wzsxyqgzteqgnr' password='A5Y3wZpRd517eEyHG0hbiJ1a2a'"
+conn_string = "creds"
 conn = psycopg2.connect(conn_string)
 application = tornado.web.Application([
     (r"/([A-Za-z]+)", LevelHandler),
