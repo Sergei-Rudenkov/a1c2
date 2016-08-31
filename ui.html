@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A1C2</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script>
+        angular.module('myApp', [])
+                .config(function ($interpolateProvider) {
+                    $interpolateProvider.startSymbol('{[{').endSymbol('}]}')
+                })
+                .controller('myCtrl', function ($scope, $http) {
+                    $scope.word = '';
+                    $scope.resp = {};
+                    $scope.warning = '';
+                    $scope.get = function () {
+                        $http.get("https://a1c2.herokuapp.com/" + $scope.word.toLowerCase())
+                                .then(function (response) {
+                                    $scope.resp = response.data;
+                                });
+                    };
+                    $scope.warn = function () {
+                        var words = $scope.word.split(" ");
+                        if (words && words.length && words.length !== 1) {
+                            $scope.warning = "Please write single word";
+                        } else {
+                            $scope.warning = '';
+                        }
+                    }
+                });
+    </script>
+</head>
+<body>
+<div style="text-align: center">
+    <div ng-app="myApp" ng-controller="myCtrl"
+         style="position:absolute; display: inline-block; top:50%; height:10em; margin-top:-10em; margin-left:-8em;">
+        <div ng-show="warning" class="alert alert-warning">
+            <strong>Warning!</strong> {[{warning}]}.
+        </div>
+        <input name="word_input" id="filter_input" style="text-align:center;" type="text" ng-change="warn()"
+               ng-model="word"/>
+        <br/>
+        <br/>
+        <button id="btn" type="button" class="btn btn-success" ng-click="get()">Check Level</button>
+        <br/>
+        <br/>
+        <p><b>{[{resp.word | uppercase}]}</b></p>
+        <span class="label"
+              ng-class="{
+          'label-success': resp.level === 'A1' || resp.level == 'A2',
+          'label-warning': resp.level === 'B1' || resp.level == 'B2',
+          'label-danger': resp.level === 'C1' || resp.level == 'C2',
+          'label-default': resp.level === 'This word was not found' || resp.level === 'The word level is not known'}">{[{resp.level}]}</span>
+        <p style="text-align: center; line-height: 100px; top:95%; margin-bottom: -5em">For <strong>Vika
+            Tarasievič</strong>, my best
+            neighbor</p>
+    </div>
+</div>
+</body>
+</html>
