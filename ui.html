@@ -12,6 +12,19 @@
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script>
         angular.module('myApp', [])
+                .directive('myEnter', function () {
+                    return function (scope, element, attrs) {
+                        element.bind("keydown keypress", function (event) {
+                            if (event.which === 13) {
+                                scope.$apply(function () {
+                                    scope.$eval(attrs.myEnter);
+                                });
+
+                                event.preventDefault();
+                            }
+                        })
+                    }
+                })
                 .config(function ($interpolateProvider) {
                     $interpolateProvider.startSymbol('{[{').endSymbol('}]}')
                 })
@@ -44,7 +57,7 @@
             <strong>Warning!</strong> {[{warning}]}.
         </div>
         <input name="word_input" id="filter_input" style="text-align:center;" type="text" ng-change="warn()"
-               ng-model="word"/>
+               ng-model="word" my-enter="get()"/>
         <br/>
         <br/>
         <button id="btn" type="button" class="btn btn-success" ng-click="get()">Check Level</button>
